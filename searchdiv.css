@@ -1,0 +1,29 @@
+.searchDiv {
+	background-color: white;
+	margin: auto;
+	padding: 10px;
+	border: 1px solid lightgray;
+	width: 500px;
+	height: 24px;
+}
+.searchInput {
+	display: inline-block;
+	border: 0px;
+	outline: 0px;
+	width: calc(100% - 52px);
+	height: 24px;
+	font-size: 18px;
+}
+.searchHelpButtons {
+	position: absolute;
+	display: inline-block;
+	width: 24px;
+	height: 42px;
+	margin-left: 4px;
+	margin-top: -10px;
+	text-align: center;
+}
+
+.searchDiv:hover {
+	border-color: #A5A5A5;
+}

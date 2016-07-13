@@ -1,0 +1,37 @@
+.navBar {
+	position: relative;
+	z-index: 101;
+	float: right;
+	width: 30px;
+	height: 30px;
+	outline: 0px;
+	margin-left: 15px;
+	text-align: center;
+}
+.subNavBar {
+	position: absolute;
+	padding: 6px;
+	outline: 0px;
+	visibility: hidden;
+	font-size: 0;
+	border: 1px solid gray;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+	background-color: white;
+}
+.subNavBarElem {
+	display: inline-block;
+	background-color: lightgray;
+	width: 50px;
+	height: 50px;
+	margin: 6px;
+}
+
+.navBar:focus + .subNavBar {
+	visibility: visible;
+}
+.subNavBar:hover {
+	visibility: visible;
+}
+.subNavBar:focus {
+	visibility: visible;
+}

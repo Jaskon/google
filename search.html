@@ -1,0 +1,218 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Search</title>
+	<link rel="stylesheet" type="text/css" href="navbar.css">
+	<link rel="stylesheet" type="text/css" href="searchdiv.css">
+	<style>
+		* {
+			margin: 0px;
+			padding: 0px;
+		}
+		body {
+			padding: 20px;
+		}
+
+		header {
+			z-index: 100;
+			background-color: #f2f2f2;
+			top: 0px;
+			left: 0px;
+			width: 100%;
+			height: 70px;
+			border-bottom: 1px solid lightgray;
+		}
+
+		#mainLogo {
+			height: 40px;
+		}
+		#mainLogoDiv {
+			position: absolute;
+			top: -2px;
+		}
+		.searchDiv {
+			margin: -8px 0 0 140px;
+		}
+		.searchButton {
+			position: absolute;
+			display: inline-block;
+			border: 0;
+			background: #4d90fe url(images/search1.png) no-repeat 3px 3px;
+			height: 46px;
+			width: 46px;
+			margin-left: 62px;
+			margin-top: -11px;
+			font-size: 0;
+		}
+
+		.results {
+			width: 50%;
+			min-width: 600px;
+			margin-left: 140px;
+			text-align: center;
+		}
+		.result {
+			text-align: left;
+			width: 100%;
+			height: 90px;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+		.result a {
+			font-size: 18pt;
+			color: blue;
+		}
+		.result .ref {
+			font-size: 11pt;
+			color: green;
+		}
+		.result .info {
+
+		}
+		.results hr {
+			border: none;
+			color: lightgray;
+			background-color: lightgray;
+			height: 1px;
+		}
+
+		.resultsFooter {
+			margin-top: 30px;
+		}
+	</style>
+
+	<script src="subNavBar.js"></script>
+	<script src="searchInput.js"></script>
+	<script>
+		var searchText, pageNumber;
+
+		function init() {
+			subNavBar = new subNavBar();
+			subNavBar.accept(document.all.subNavBar, document.all.navBar);
+
+			// Вертикальное выравнивание изображений внутри кнопок
+			// (Внимание!) Только если кроме изображений детей больше нет
+			var arr = document.getElementsByClassName("searchHelpButtons");
+			for(var i = 0; i < arr.length; i++) {
+				for(var j = 0; j < arr[i].childNodes.length; j++)
+					arr[i].childNodes[j].style.marginTop = (arr[i].clientHeight - arr[i].childNodes[j].clientHeight) / 2;
+			}
+			var arr = document.getElementsByClassName("navBar");
+			for(var i = 0; i < arr.length; i++) {
+				for(var j = 0; j < arr[i].childNodes.length; j++)
+					arr[i].childNodes[j].style.marginTop = (arr[i].clientHeight - arr[i].childNodes[j].clientHeight) / 2;
+			}
+
+			var computedStyle = getComputedStyle(document.body);
+			document.all.content.style.left = computedStyle.padding;
+			document.all.content.style.top = computedStyle.padding;
+			document.all.header.style.marginLeft = "-" + computedStyle.padding;
+			document.all.header.style.marginTop = "-" + computedStyle.padding;
+			document.all.header.style.width = "calc(100% + 40px)"
+
+			document.all.searchInput.value = searchText;
+		}
+	</script>
+</head>
+<body onload="init()">
+
+	<script>
+		searchText = window.location.search;
+
+		pageNumber = searchText.slice(searchText.indexOf("pageNumber")+11, searchText.indexOf("&", searchText.indexOf("pageNumber")));
+		if (!pageNumber)
+			pageNumber = 1;
+
+		searchText = searchText.slice(searchText.indexOf("value=")+6);
+	</script>
+
+	<div id="navBar" tabindex="0" class="navBar" onfocus="subNavBar.recount(document.all.subNavBar, this)"><img src="images\\alarm.png"></div>
+	<div id="subNavBar" tabindex="1" class="subNavBar">
+		<!-- Эти элементы приходят с сервера. Для примера просто несколько квадратов -->
+		<div class="subNavBarElem"></div>
+		<div class="subNavBarElem"></div>
+		<div class="subNavBarElem"></div>
+		<br>
+		<div class="subNavBarElem"></div>
+		<div class="subNavBarElem"></div>
+		<div class="subNavBarElem"></div>
+	</div>
+	<div id="navBar1" tabindex="0" class="navBar" onfocus="subNavBar.recount(document.all.subNavBar1, this)"><img src="images\\apps.png"></div>
+	<div id="subNavBar1" tabindex="1" class="subNavBar">
+		<div class="subNavBarElem"></div>
+	</div>
+	
+	<header id="header"></header>
+	<form id="content" action="search.html" style="position: absolute; z-index: 101;">
+		<div id="mainLogoDiv">
+			<img id="mainLogo" src="images\googlelogo_color_272x92dp.png">
+		</div>
+
+		<div class="searchDiv" onclick="this.getElementsByTagName('input')[0].focus();">
+			<input id="searchInput" type="text" name="value" class="searchInput" onfocus="searchInputFocused(this)" onblur="searchInputUnfocused(this)" autocomplete="off">
+			<div class="searchHelpButtons"><img src="images\tia.png" style="width: calc(100% - 5px);"></div>
+			<div class="searchHelpButtons" style="margin-left: 32px"><img src="images\voice.png" style="width: 100%;"></div>
+			<input type="submit" value="Поиск в Google" class="searchButton">
+		</div>
+	</form>
+
+
+	<div class="results">
+		<div class="result">
+			<a href="resultat.html">Результат 1</a>
+			<br>
+			<span class="ref">www.web-sait1.com/stranica1</span>
+			<br>
+			<span>Информация о результате поиска 1</span>
+		</div>
+		<hr>
+		<div class="result">
+			<a href="resultat.html">Результат 2</a>
+			<br>
+			<span class="ref">www.web-sait1.com/stranica2</span>
+			<br>
+			<span>Информация о результате поиска 2</span>
+		</div>
+		<hr>
+		<div class="result">
+			<a href="resultat.html">Результат 3</a>
+			<br>
+			<span>Информация о результате поиска 3</span>
+		</div>
+		<hr>
+		<div class="result">
+			<a href="resultat.html">Результат 4</a>
+			<br>
+			<span class="ref">www.web-sait1.com/stranica4</span>
+			<br>
+			<span>Информация о результате поиска 4</span>
+		</div>
+		<hr>
+		<div class="result">
+			<a href="resultat.html">Результат 5</a>
+			<br>
+			<span class="ref">www.web-sait1.com/stranica5</span>
+			<br>
+			<span class="info">Информация о результате поиска 5</span>
+		</div>
+		<hr>
+
+		<div class="resultsFooter">
+			<div style="display: inline-block"><img src="images\G.png"><br>&nbsp</div>
+			<script>
+				var pageCount = 5;		// Приходит с сервера
+				for (var i = 1; i <= pageCount; i++)
+					if (pageNumber == i)
+						document.write('<div style="display: inline-block"><img src="images\\o.png"><br>' + i + '</div>');
+					else
+						document.write('<div style="display: inline-block"><a href="search.html?pageNumber=' + i + '&value=' + searchText + '"><img src="images\\o(2).png"><br>' + i + '</a></div>');
+			</script>
+				<div style="display: inline-block"><img src="images\g(l).png"><br>&nbsp</div>
+				<div style="display: inline-block"><img src="images\l.png"><br>&nbsp</div>
+				<div style="display: inline-block"><img src="images\e.png"><br>&nbsp</div>
+		</div>
+	</div>
+
+	
+</body>
+</html>

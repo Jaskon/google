@@ -1,0 +1,120 @@
+<!-- Создать js-класс subNavBar (rigth/left можно как поля) с функцией применения css-класса и функцией пересчёта css-характеристик (margin) для входного элемента (относительно вызывающей его кнопки)
+subMenu.accept(elem1, parent1)  //elem1 - блок подменю, parent1 - кнопка (на самом деле не родитель)
+subMenu.recount(elem1, parent1)  //То же самое. Пересчёт elem1 относительно parent1
+Предусмотреть выход за экран -->
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Google</title>
+	<link rel="stylesheet" type="text/css" href="navbar.css">
+	<link rel="stylesheet" type="text/css" href="searchdiv.css">
+	<style>
+		* {
+			margin: 0px;
+			padding: 0px;
+		}
+		body {
+			padding: 20px;
+		}
+
+		.mainLogoDiv {
+			margin: 20px auto;
+		}
+
+
+		.searchButtonsDiv {
+			text-align: center;
+			margin-top: 20px;
+		}
+		.searchButtons {
+			height: 36px;
+			padding: 0 16px;
+			background-color: #f2f2f2;
+			border: 1px solid #f2f2f2;
+			border-radius: 2px;
+			font-size: 13px;
+			font-weight: bold;
+			color: gray;
+			outline: 0px;
+			margin: 0 2px;
+		}
+		.searchButtons:hover {
+			background-color: #f5f5f5;
+			border-color: lightgray;
+			color: black;
+		}
+		.searchButtons:focus {
+			border-color: #4d90fe;
+		}
+	</style>
+
+	<script src="subNavBar.js"></script>
+	<script src="searchInput.js"></script>
+	<script>
+		var subNavBar;
+
+		function init() {
+			subNavBar = new subNavBar();
+			subNavBar.accept(document.all.subNavBar, document.all.navBar);
+
+			document.all.mainLogoDiv.style.width = document.all.mainLogo.clientWidth;
+			document.all.mainLogoDiv.style.height = document.all.mainLogo.clientHeight;
+
+			// Вертикальное выравнивание изображений внутри кнопок
+			// (Внимание!) Только если кроме изображений детей больше нет
+			var arr = document.getElementsByClassName("searchHelpButtons");
+			for(var i = 0; i < arr.length; i++) {
+				for(var j = 0; j < arr[i].childNodes.length; j++)
+					arr[i].childNodes[j].style.marginTop = (arr[i].clientHeight - arr[i].childNodes[j].clientHeight) / 2;
+			}
+			var arr = document.getElementsByClassName("navBar");
+			for(var i = 0; i < arr.length; i++) {
+				for(var j = 0; j < arr[i].childNodes.length; j++)
+					arr[i].childNodes[j].style.marginTop = (arr[i].clientHeight - arr[i].childNodes[j].clientHeight) / 2;
+			}
+
+			document.all.content.style.marginTop = document.body.clientHeight*2/5 - document.all.content.clientHeight/2;
+			window.addEventListener("resize", function() {
+				document.all.content.style.marginTop = document.body.clientHeight*2/5 - document.all.content.clientHeight/2;
+			});
+		}
+	</script>
+</head>
+<body onload="init()">
+
+	<div id="navBar" tabindex="0" class="navBar" onfocus="subNavBar.recount(document.all.subNavBar, this)"><img src="images\\alarm.png"></div>
+	<div id="subNavBar" tabindex="1" class="subNavBar">
+		<!-- Эти элементы приходят с сервера. Для примера просто несколько квадратов -->
+		<div class="subNavBarElem"></div>
+		<div class="subNavBarElem"></div>
+		<div class="subNavBarElem"></div>
+		<br>
+		<div class="subNavBarElem"></div>
+		<div class="subNavBarElem"></div>
+		<div class="subNavBarElem"></div>
+	</div>
+	<div id="navBar1" tabindex="0" class="navBar" onfocus="subNavBar.recount(document.all.subNavBar1, this)"><img src="images\\apps.png"></div>
+	<div id="subNavBar1" tabindex="1" class="subNavBar">
+		<div class="subNavBarElem"></div>
+	</div>
+
+
+	<form id="content" action="search.html">
+		<div id="mainLogoDiv" class="mainLogoDiv">
+			<img id="mainLogo" src="images\googlelogo_color_272x92dp.png">
+		</div>
+
+		<div class="searchDiv" onclick="this.getElementsByTagName('input')[0].focus();">
+			<input type="text" name="value" class="searchInput" onfocus="searchInputFocused(this)" onblur="searchInputUnfocused(this)" >
+			<div class="searchHelpButtons"><img src="images\tia.png" style="width: calc(100% - 5px);"></div>
+			<div class="searchHelpButtons" style="margin-left: 32px"><img src="images\voice.png" style="width: 100%;"></div>
+		</div>
+
+		<div id="searchButtonsDiv" class="searchButtonsDiv">
+			<input id="searchButton1" class="searchButtons" type="submit" value="Поиск в Google">
+			<input id="searchButton2" class="searchButtons" type="submit" value="Мне повезёт!">
+		</div>
+	</form>
+
+</body>
+</html>
