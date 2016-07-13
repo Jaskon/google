@@ -138,9 +138,10 @@
 	<script>
 		searchText = window.location.search;
 
-		pageNumber = searchText.slice(searchText.indexOf("pageNumber")+11, searchText.indexOf("&", searchText.indexOf("pageNumber")));
-		if (!pageNumber)
+		if (searchText.indexOf("pageNumber") == -1)
 			pageNumber = 1;
+		else
+			pageNumber = searchText.slice(searchText.indexOf("pageNumber")+11, searchText.indexOf("&", searchText.indexOf("pageNumber")));
 
 		searchText = searchText.slice(searchText.indexOf("value=")+6);
 	</script>
