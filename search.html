@@ -111,10 +111,10 @@
 			}
 
 			var computedBodyStyle = getComputedStyle(document.body);
-			document.all.content.style.left = parseInt(computedBodyStyle.padding);
-			document.all.content.style.top = parseInt(computedBodyStyle.padding);
-			document.all.header.style.marginLeft = "-" + parseInt(computedBodyStyle.padding);
-			document.all.header.style.marginTop = "-" + parseInt(computedBodyStyle.padding);
+			document.all.content.style.left = parseInt(computedBodyStyle.paddingLeft);
+			document.all.content.style.top = parseInt(computedBodyStyle.paddingTop);
+			document.all.header.style.marginLeft = "-" + parseInt(computedBodyStyle.paddingLeft);
+			document.all.header.style.marginTop = "-" + parseInt(computedBodyStyle.paddingTop);
 			document.all.header.style.width = "calc(100% + 40px)"
 
 			document.all.searchInput.value = searchText;
@@ -126,8 +126,8 @@
 				document.all.footer.style.top = "calc(100% - 41px)";
 				document.all.footer.style.left = "0px";
 			} else {
-				document.all.footer.style.width = "calc(100% + " + parseInt(computedBodyStyle.padding)*2 + "px)";
-				document.all.footer.style.marginLeft = "-" + parseInt(computedBodyStyle.padding);
+				document.all.footer.style.width = "calc(100% + " + parseInt(computedBodyStyle.paddingLeft)*2 + "px)";
+				document.all.footer.style.marginLeft = "-" + parseInt(computedBodyStyle.paddingLeft);
 				document.all.footer.style.marginTop = "40px";
 			}
 		}
