@@ -10,7 +10,7 @@
 			padding: 0px;
 		}
 		body {
-			padding: 20px;
+			padding: 20px 20px 0px 20px;
 		}
 
 		header {
@@ -80,6 +80,12 @@
 		.resultsFooter {
 			margin-top: 30px;
 		}
+
+		.footer {
+			height: 40px;
+			border-top: 1px solid lightgray;
+			background-color: #f2f2f2;
+		}
 	</style>
 
 	<script src="subNavBar.js"></script>
@@ -104,14 +110,26 @@
 					arr[i].childNodes[j].style.marginTop = (arr[i].clientHeight - arr[i].childNodes[j].clientHeight) / 2;
 			}
 
-			var computedStyle = getComputedStyle(document.body);
-			document.all.content.style.left = computedStyle.padding;
-			document.all.content.style.top = computedStyle.padding;
-			document.all.header.style.marginLeft = "-" + computedStyle.padding;
-			document.all.header.style.marginTop = "-" + computedStyle.padding;
+			var computedBodyStyle = getComputedStyle(document.body);
+			document.all.content.style.left = parseInt(computedBodyStyle.padding);
+			document.all.content.style.top = parseInt(computedBodyStyle.padding);
+			document.all.header.style.marginLeft = "-" + parseInt(computedBodyStyle.padding);
+			document.all.header.style.marginTop = "-" + parseInt(computedBodyStyle.padding);
 			document.all.header.style.width = "calc(100% + 40px)"
 
 			document.all.searchInput.value = searchText;
+
+			// Footer
+			if (document.all.footer.offsetTop < document.body.clientHeight) {
+				document.all.footer.style.width = "100%";
+				document.all.footer.style.position = "fixed";
+				document.all.footer.style.top = "calc(100% - 41px)";
+				document.all.footer.style.left = "0px";
+			} else {
+				document.all.footer.style.width = "calc(100% + " + parseInt(computedBodyStyle.padding)*2 + "px)";
+				document.all.footer.style.marginLeft = "-" + parseInt(computedBodyStyle.padding);
+				document.all.footer.style.marginTop = "40px";
+			}
 		}
 	</script>
 </head>
@@ -197,6 +215,22 @@
 			<span class="info">Информация о результате поиска 5</span>
 		</div>
 		<hr>
+		<div class="result">
+			<a href="resultat.html">Результат 6</a>
+			<br>
+			<span class="ref">www.web-sait1.com/stranica5</span>
+			<br>
+			<span class="info">Информация о результате поиска 5</span>
+		</div>
+		<hr>
+		<div class="result">
+			<a href="resultat.html">Результат 7</a>
+			<br>
+			<span class="ref">www.web-sait1.com/stranica5</span>
+			<br>
+			<span class="info">Информация о результате поиска 5</span>
+		</div>
+		<hr>
 
 		<div class="resultsFooter">
 			<div style="display: inline-block"><img src="images\G.png"><br>&nbsp</div>
@@ -214,6 +248,8 @@
 		</div>
 	</div>
 
+	<div id="footer" class="footer">
+	</div>
 	
 </body>
 </html>
