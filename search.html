@@ -161,6 +161,8 @@
 					div.setAttribute("class", "resultData");
 					div.innerHTML = parsedGoogleArray["data" + i];
 					document.getElementById("result" + i).appendChild(div);
+
+					document.all.results.insertBefore(document.createElement("hr"), document.all.resultsFooter);
 				}
 
 				next0();
@@ -273,15 +275,6 @@
 
 
 	<div id="results" class="results">
-		<div class="result">
-			<a href="resultat.html">Результат 1</a>
-			<br>
-			<span class="resultRef">www.web-sait1.com/stranica1</span>
-			<br>
-			<span>Информация о результате поиска 1</span>
-		</div>
-		<hr>
-
 		<div id="resultsFooter" class="resultsFooter">
 			<div style="display: inline-block; width: 45px"><img src="images\G.png" style="width: 100%"><br>&nbsp</div>
 			<script>
