@@ -237,7 +237,8 @@
 
 		searchText = searchText.slice(searchText.indexOf("value=")+6);
 
-		//regExp(searchText) ////
+		searchText = decodeURIComponent(searchText);
+		searchText = searchText.replace(/\+/g, " ");
 
 		if (searchText == "")
 			document.location.replace("google.html");
