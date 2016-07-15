@@ -175,7 +175,7 @@
 
 			// Берём всю страницу поиска google
 			var xhr = new XMLHttpRequest();
-	        xhr.open("GET", "http://googlerequest-zmey.rhcloud.com/?value=" + searchText + "&page=" + page, true);		//http://localhost:3000/?value=123&page=2
+	        xhr.open("GET", "https://googlerequest-zmey.rhcloud.com/?value=" + searchText + "&page=" + page, true);		//http://localhost:3000/?value=123&page=2
 	        xhr.onreadystatechange = function() {
 	            if (xhr.readyState == 4 && xhr.status == 200) {
 	                googlePageText = xhr.responseText;
