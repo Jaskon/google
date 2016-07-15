@@ -59,15 +59,15 @@
 			margin-top: 10px;
 			margin-bottom: 10px;
 		}
-		.result a {
+		.result .resultHeader {
 			font-size: 18pt;
 			color: blue;
 		}
-		.result .ref {
+		.result .resultRef {
 			font-size: 11pt;
 			color: green;
 		}
-		.result .info {
+		.result .resultData {
 
 		}
 		.results hr {
@@ -91,7 +91,7 @@
 	<script src="subNavBar.js"></script>
 	<script src="searchInput.js"></script>
 	<script>
-		var searchText, pageNumber;
+		var searchText, page, googlePageText, parsedGoogleArray = {};		// page - page number
 
 		function init() {
 			subNavBar = new subNavBar();
@@ -130,6 +130,59 @@
 				document.all.footer.style.marginLeft = "-" + parseInt(computedBodyStyle.paddingLeft);
 				document.all.footer.style.marginTop = "40px";
 			}
+
+
+
+			// Функция вставки данных
+			function insertParsedData() {
+				var div;
+
+				div = document.createElement("div");
+				div.setAttribute("id", "result1");
+				div.setAttribute("class", "result");
+				document.all.results.insertBefore(div, document.all.resultsFooter);
+
+
+				div = document.createElement("div");
+				div.setAttribute("class", "resultHeader");
+				div.innerHTML = parsedGoogleArray["header" + 1];
+				document.getElementById("result" + 1).appendChild(div);
+
+				//document.getElementById("result" + 1).appendChild(document.createElement("br"));
+
+				div = document.createElement("div");
+				div.setAttribute("class", "resultRef");
+				div.innerHTML = parsedGoogleArray["ref" + 1];
+				document.getElementById("result" + 1).appendChild(div);
+
+				//document.getElementById("result" + 1).appendChild(document.createElement("br"));
+
+				div = document.createElement("div");
+				div.setAttribute("class", "resultData");
+				div.innerHTML = parsedGoogleArray["data" + 1];
+				document.getElementById("result" + 1).appendChild(div);
+			}
+
+			// Функция парсинга
+			var googleParseFunc = function(text) {
+				currentStart = text.indexOf(">", text.indexOf("<h3", text.indexOf("<div class=\"g\">"))) + 1;
+				currentEnd = text.indexOf("</h3>", currentStart);
+				parsedGoogleArray.header1 = text.slice(currentStart, currentEnd);
+
+
+				insertParsedData();		// Вставляем спаршенные данные в страницу
+	        }
+
+			// Берём всю страницу поиска google
+			var xhr = new XMLHttpRequest();
+	        xhr.open("GET", "http://googlerequest-zmey.rhcloud.com/?value=" + searchText + "&page=" + page, true);		//http://localhost:3000/?value=123&page=2
+	        xhr.onreadystatechange = function() {
+	            if (xhr.readyState == 4 && xhr.status == 200) {
+	                googlePageText = xhr.responseText;
+	                googleParseFunc(googlePageText);		// Парсим её
+	            }
+	        }
+	        xhr.send();
 		}
 	</script>
 </head>
@@ -138,12 +191,14 @@
 	<script>
 		searchText = window.location.search;
 
-		if (searchText.indexOf("pageNumber") == -1)
-			pageNumber = 1;
+		if (searchText.indexOf("page") == -1)
+			page = 1;
 		else
-			pageNumber = searchText.slice(searchText.indexOf("pageNumber")+11, searchText.indexOf("&", searchText.indexOf("pageNumber")));
+			page = searchText.slice(searchText.indexOf("page=")+5, searchText.indexOf("&", searchText.indexOf("page=")));
 
 		searchText = searchText.slice(searchText.indexOf("value=")+6);
+		if (searchText == "")
+			document.location.replace("google.html");
 	</script>
 
 	<div id="navBar" tabindex="0" class="navBar" onfocus="subNavBar.recount(document.all.subNavBar, this)"><img src="images\\alarm.png"></div>
@@ -177,75 +232,30 @@
 	</form>
 
 
-	<div class="results">
+	<div id="results" class="results">
 		<div class="result">
 			<a href="resultat.html">Результат 1</a>
 			<br>
-			<span class="ref">www.web-sait1.com/stranica1</span>
+			<span class="resultRef">www.web-sait1.com/stranica1</span>
 			<br>
 			<span>Информация о результате поиска 1</span>
 		</div>
 		<hr>
-		<div class="result">
-			<a href="resultat.html">Результат 2</a>
-			<br>
-			<span class="ref">www.web-sait1.com/stranica2</span>
-			<br>
-			<span>Информация о результате поиска 2</span>
-		</div>
-		<hr>
-		<div class="result">
-			<a href="resultat.html">Результат 3</a>
-			<br>
-			<span>Информация о результате поиска 3</span>
-		</div>
-		<hr>
-		<div class="result">
-			<a href="resultat.html">Результат 4</a>
-			<br>
-			<span class="ref">www.web-sait1.com/stranica4</span>
-			<br>
-			<span>Информация о результате поиска 4</span>
-		</div>
-		<hr>
-		<div class="result">
-			<a href="resultat.html">Результат 5</a>
-			<br>
-			<span class="ref">www.web-sait1.com/stranica5</span>
-			<br>
-			<span class="info">Информация о результате поиска 5</span>
-		</div>
-		<hr>
-		<div class="result">
-			<a href="resultat.html">Результат 6</a>
-			<br>
-			<span class="ref">www.web-sait1.com/stranica5</span>
-			<br>
-			<span class="info">Информация о результате поиска 5</span>
-		</div>
-		<hr>
-		<div class="result">
-			<a href="resultat.html">Результат 7</a>
-			<br>
-			<span class="ref">www.web-sait1.com/stranica5</span>
-			<br>
-			<span class="info">Информация о результате поиска 5</span>
-		</div>
-		<hr>
 
-		<div class="resultsFooter">
-			<div style="display: inline-block"><img src="images\G.png"><br>&nbsp</div>
+		<div id="resultsFooter" class="resultsFooter">
+			<div style="display: inline-block; width: 45px"><img src="images\G.png" style="width: 100%"><br>&nbsp</div>
 			<script>
-				var pageCount = 5;		// Приходит с сервера
-				for (var i = 1; i <= pageCount; i++)
-					if (pageNumber == i)
-						document.write('<div style="display: inline-block"><img src="images\\o.png"><br>' + i + '</div>');
+				var n = parseInt(page);
+				n = n <= 6 ? (10) : (n + 4);
+				for (var i = n - 9; i <= n; i++)
+					if (page == i)
+						document.write('<div style="display: inline-block; width: 30px"><img src="images\\o.png" style="width: 100%"><br>' + i + '</div>');
 					else
-						document.write('<div style="display: inline-block"><a href="search.html?pageNumber=' + i + '&value=' + searchText + '"><img src="images\\o(2).png"><br>' + i + '</a></div>');
+						document.write('<div style="display: inline-block; width: 30px"><a href="search.html?page=' + i + '&value=' + searchText + '"><img src="images\\o(2).png" style="width: 100%"><br>' + i + '</a></div>');
 			</script>
-				<div style="display: inline-block"><img src="images\g(l).png"><br>&nbsp</div>
-				<div style="display: inline-block"><img src="images\l.png"><br>&nbsp</div>
-				<div style="display: inline-block"><img src="images\e.png"><br>&nbsp</div>
+				<div style="display: inline-block; width: 30px"><img src="images\g(l).png" style="width: 100%"><br>&nbsp</div>
+				<div style="display: inline-block; width: 6px"><img src="images\l.png" style="width: 100%"><br>&nbsp</div>
+				<div style="display: inline-block; width: 28px"><img src="images\e.png" style="width: 100%"><br>&nbsp</div>
 		</div>
 	</div>
 
