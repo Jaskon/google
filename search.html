@@ -209,8 +209,7 @@
 						tempStart = text.indexOf("<div", tempStart+1);
 						currentEnd = text.indexOf("</div", currentEnd+1);
 					}
-					tempText = text.slice(currentStart, currentEnd);
-					//tempText = text.slice(text.indexOf(">", currentStart)+1, currentEnd);
+					tempText = text.slice(text.indexOf(">", currentStart)+1, currentEnd);
 
 					if (tempText.indexOf("<h3 class=\"r\"") < 0) {
 						currentStart = text.indexOf("<div class=\"g\">", currentEnd);
