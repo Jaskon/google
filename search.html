@@ -72,7 +72,7 @@
 			font-size: 15pt;
 			color: blue;
 		}
-		.result .resultRef {
+		.result .resultCite {
 			font-size: 11pt;
 			color: green;
 		}
@@ -100,7 +100,7 @@
 	<script src="subNavBar.js"></script>
 	<script src="searchInput.js"></script>
 	<script>
-		var searchText, page, googlePageText, parsedGoogleArray = {};		// page - page number
+		var searchText, page, text, parsedGoogleArray = {};		// page - page number
 
 		function init() {
 			subNavBar = new subNavBar();
@@ -134,7 +134,7 @@
 			// Функция вставки данных
 			function insertParsedData() {
 
-				var div;
+				var div, nodes, ref;
 
 				for (var i = 1; parsedGoogleArray["header" + i]; i++) {
 					div = document.createElement("div");
@@ -148,20 +148,44 @@
 					div.innerHTML = parsedGoogleArray["header" + i];
 					document.getElementById("result" + i).appendChild(div);
 
+					ref = div.getElementsByTagName("a")[0].getAttribute("href");
+					if (ref.indexOf("url?q=") > -1)
+						ref = ref.slice(ref.indexOf("url?q=")+6, ref.indexOf("&", ref.indexOf("url?q=")+6));
+					else if (ref.indexOf("search?q=") > -1)
+						ref = "https://google.com/" + ref.slice(ref.indexOf("search?q="));
+					ref = decodeURIComponent(ref);
+					div.getElementsByTagName("a")[0].setAttribute("href", ref);
+
 					//document.getElementById("result" + i).appendChild(document.createElement("br"));
 
-					div = document.createElement("div");
-					div.setAttribute("class", "resultRef");
-					div.innerHTML = parsedGoogleArray["ref" + i];
-					document.getElementById("result" + i).appendChild(div);
+					if (parsedGoogleArray["cite" + i]) {
+						div = document.createElement("div");
+						div.setAttribute("class", "resultCite");
+						div.innerHTML = parsedGoogleArray["cite" + i];
+						document.getElementById("result" + i).appendChild(div);
 
-					//document.getElementById("result" + i).appendChild(document.createElement("br"));
+						//document.getElementById("result" + i).appendChild(document.createElement("br"));
+					}
 
-					div = document.createElement("div");
-					div.setAttribute("class", "resultData");
-					div.innerHTML = parsedGoogleArray["data" + i];
-					document.getElementById("result" + i).appendChild(div);
+					if (parsedGoogleArray["data" + i]) {
+						div = document.createElement("div");
+						div.setAttribute("class", "resultData");
+						div.innerHTML = parsedGoogleArray["data" + i];
 
+						if ((nodes = div.getElementsByTagName("img")).length > 0)
+							if (parsedGoogleArray["cite" + i]) {
+								document.getElementById("result" + i).style.height = "110px";
+								nodes[0].style.float = "left";
+								nodes[0].style.margin = "4px";
+							}
+							for (var j = 0; j < nodes.length; j++) {
+								nodes[j].setAttribute("height", "");
+								nodes[j].setAttribute("width", "");
+								nodes[j].style.height = "66px";
+							}
+
+						document.getElementById("result" + i).appendChild(div);
+					}
 					document.all.results.insertBefore(document.createElement("hr"), document.all.resultsFooter);
 				}
 
@@ -169,25 +193,56 @@
 			}
 
 			// Функция парсинга
-			var googleParseFunc = function(text) {
+			var googleParseFunc = function() {
 
 				var currentStart = 0, tempStart, currentEnd;
+				var currentHeaderStart, currentHeaderEnd;
+				var currentCiteStart;
+				var currentDataStart, tempDataStart, currentDataEnd;
+				var tempText;
 
-				currentStart = text.indexOf("<div class=\"g\"", currentStart);
+				currentStart = text.indexOf("<div class=\"g\">", currentStart);
 				tempStart = currentStart;
 				currentEnd = text.indexOf("</div", currentStart);
 				for (var i = 1; currentStart != -1; i++) {
-					while(text.indexOf("<div", tempStart) < currentEnd) {
+					while ((text.indexOf("<div", tempStart+1) < currentEnd) && text.indexOf("<div", tempStart+1) > -1) {
 						tempStart = text.indexOf("<div", tempStart+1);
-						currentEnd = text.indexOf("</div", currentEnd);
+						currentEnd = text.indexOf("</div", currentEnd+1);
 					}
-					var tempText = text.slice(text.indexOf(">", currentStart)+1, currentEnd);
+					tempText = text.slice(currentStart, currentEnd);
+					//tempText = text.slice(text.indexOf(">", currentStart)+1, currentEnd);
 
-					var currentHeaderStart = tempText.indexOf(">", tempText.indexOf("<h3", tempText.indexOf("<div class=\"g\">"))) + 1;
-					var currentHeaderEnd = tempText.indexOf("</h3>", currentHeaderStart);
+					if (tempText.indexOf("<h3 class=\"r\"") < 0) {
+						currentStart = text.indexOf("<div class=\"g\">", currentEnd);
+						tempStart = currentStart;
+						currentEnd = text.indexOf("</div", currentStart);
+						continue;
+					}
+					currentHeaderStart = tempText.indexOf(">", tempText.indexOf("<h3 class=\"r\"", tempText.indexOf("<div class=\"g\">"))) + 1;
+					currentHeaderEnd = tempText.indexOf("</h3>", currentHeaderStart);
 					parsedGoogleArray["header" + i] = tempText.slice(currentHeaderStart, currentHeaderEnd);
 
-					currentStart = text.indexOf("<div class=\"g\"", currentEnd);
+					if ((currentCiteStart = tempText.indexOf("<cite")) > -1)
+						parsedGoogleArray["cite" + i] = tempText.slice(tempText.indexOf(">", currentCiteStart)+1, tempText.indexOf("</cite", currentCiteStart));
+
+					if ((currentDataStart = tempText.indexOf("<span class=\"st\"")) > -1) {
+						tempDataStart = currentDataStart;
+						currentDataEnd = tempText.indexOf("</span", currentDataStart);
+						while ((tempText.indexOf("<span", tempDataStart+1) < currentDataEnd) && (tempText.indexOf("<span", tempDataStart+1) > -1)) {
+							tempDataStart = tempText.indexOf("<span", tempDataStart+1);
+							currentDataEnd = tempText.indexOf("</span", currentDataEnd+1);
+						}
+						parsedGoogleArray["data" + i] = tempText.slice(tempText.indexOf(">", currentDataStart)+1, currentDataEnd);
+					}
+
+					if (!parsedGoogleArray["cite" + i] && !parsedGoogleArray["data" + i] && (tempText.indexOf("Картинки") > -1 || tempText.indexOf("Images") > -1))
+						parsedGoogleArray["data" + i] = tempText.slice(tempText.indexOf(">", tempText.indexOf("<div"))+1, tempText.indexOf("</div"));
+					else
+						if (tempText.indexOf("<img")) {
+							parsedGoogleArray["data" + i] = tempText.slice(tempText.indexOf("<img"), tempText.indexOf(">", tempText.indexOf("<img"))+1) + parsedGoogleArray["data" + i];
+						}
+
+					currentStart = text.indexOf("<div class=\"g\">", currentEnd);
 					tempStart = currentStart;
 					currentEnd = text.indexOf("</div", currentStart);
 				}
@@ -200,8 +255,8 @@
 	        xhr.open("GET", "https://googlerequest-zmey.rhcloud.com/?value=" + searchText + "&page=" + page, true);		//http://localhost:3000/?value=123&page=2
 	        xhr.onreadystatechange = function() {
 	            if (xhr.readyState == 4 && xhr.status == 200) {
-	                googlePageText = xhr.responseText;
-	                googleParseFunc(googlePageText);		// Парсим её
+	                text = xhr.responseText;
+	                googleParseFunc();		// Парсим её
 	            }
 	        }
 	        xhr.send();
